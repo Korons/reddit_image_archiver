@@ -1,22 +1,18 @@
 #!/bin/bash
 now=$(date +%Y_%m_%d_%T)
-
-
-
 #These are the subreddits you want to download imgur albums from
 if [ "$1" == -h ]
 	then
 	printf "Help \n\n -lo 	 Get links but do not download \n -l 	 Logs time when ran\n"
 	exit
 fi
-subreddits=() # The subreddits you want to download from go here
-for i in "${subreddits[@]}"
+SUBREDDITS=~/.config/imgur_down/subreddits.txt
+while read line;
 do
-	echo "$i"
-curl https://www.reddit.com/r/"$i".json >> /tmp/reddit_json
+	curl https://www.reddit.com/r/"$line".json >> /tmp/reddit_json
+done < "$SUBREDDITS"
 grep -o  "http://imgur.com/a......" /tmp/reddit_json >> /tmp/links.txt
 grep -o  "https://imgur.com/a......" /tmp/reddit_json >> /tmp/links.txt
-done
 #This changes http to https 
 sed -i 's/https/http/g' /tmp/links.txt
 sed -i 's/http/https/g' /tmp/links.txt
@@ -29,16 +25,21 @@ rm /tmp/links.txt
 rm /tmp/reddit_json
 exit
 fi
-cd ~/Pictures/Imguralbums
 while read line;
-	do
-	 torsocks imguralbum.py "$line" 
-done < /tmp/links.txt
-# Logs when/if it ran
-if [ "$1" == -l ]
-	then
-	touch ~/imgur_log
-	echo "Ran at $now" >> ~/imgur_log
-fi
+do
+	sed -i 's@$line@ @g' /tmp/links.txt
+done < ~/imgur_links
+sort /tmp/links.txt | uniq > /tmp/links2.txt 
+ cd ~/Pictures/Imguralbums
+ while read line;
+ 	do
+ 	 imguralbum.py "$line" 
+ done < /tmp/links2.txt
+ cd ~/Pictures/Imguralbums
+ for i in *; do zip -r "${i%/}.cbr" "$i" -x *.cbr; done
+ rm -r */
+  Logs when/if it ran
+cat /tmp/links.txt >> ~/imgur_links
 rm /tmp/links.txt
 rm /tmp/reddit_json
+echo "imgur_down ran at $now" >> ~/script_log
