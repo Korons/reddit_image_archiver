@@ -12,7 +12,7 @@ for i in lines:
 	url = "https://reddit.com/r/" + i + ".json"
 	req = urllib.request.Request(
     url, 
-    headers={'User-Agent': "abotbyineedmorealts"}
+    headers={'User-Agent': "abotbyATGUNAT"}
 	)
 	print (url)
 	reddit_call = urllib.request.urlopen(req)
