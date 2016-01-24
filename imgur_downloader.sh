@@ -1,4 +1,5 @@
 #!/bin/bash
+#THIS IS OUTDATED. use imgur_downloader.py
 now=$(date +%Y_%m_%d_%T)
 #These are the subreddits you want to download imgur albums from
 if [ "$1" == -h ]
