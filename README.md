@@ -2,10 +2,19 @@
 This is a bash script which uses imguralbum.py from https://github.com/alexgisby/imgur-album-downloader to download all imgur albums from the front page of subreddits
 
 ## Usage
+Put imgur-album-downloader in your path as imgurdl
 
-Make a file with the list of subreddits you want to download imgutalbums from and replace the following line in the script with the path to your file
+    sudo mv imguralbum.py /usr/bin/imgurdl
 
-    SUBREDDITS=~/.config/imgur_down/subreddits.txt
+Then make a folder called imgur_down in ~/.config
+
+    mkdir ~/.config/imgur_down
     
+Then make a file called subreddits.txt in imgur_down
+
+    nano subreddits.txt
+
+And enter the name of the sub reddits you want to download from. You only need the subreddit name not the full url.
+
+The script will download all imguralbums from the front page of those subreddits and save the images to ~/Pictures/Imguralbums/SUBREDDIT/RANDOMSTRING
     
-After you do that you can set a cron job for the script and it will download all imgur albums from the front pages of the subreddits you specified
