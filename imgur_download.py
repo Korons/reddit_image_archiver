@@ -32,4 +32,7 @@ for i in lines:
 			f = open(downloaded,'a')
 			f.write(image_url + '\n')
 			f.close() 
-			
+for i in lines:
+	os.chdir("/home/wil/Pictures/Imguralbums/" + i)
+	os.system('for i in *; do zip -r "${i%/}.cbr" "$i" -x *.cbr; done')
+	os.system('rm -r */')
