@@ -2,10 +2,9 @@ import sys
 import re
 import urllib.request, urllib.parse, urllib.error, urllib
 import os
-import math
+home = os.getenv("HOME")
 
-
-SUBREDDITS='/home/wil/.config/imgur_down/subreddits.txt'
+SUBREDDITS= home + '/.config/imgur_down/subreddits.txt'
 with open(SUBREDDITS) as f:
 	lines = f.read().splitlines()
 for i in lines:
