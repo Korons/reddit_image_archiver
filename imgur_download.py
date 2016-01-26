@@ -9,7 +9,6 @@ with open(SUBREDDITS) as f:
 	lines = f.read().splitlines()
 	print (lines)
 for i in lines:
-	print (i)
 	url = "https://reddit.com/r/" + i + ".json"
 	req = urllib.request.Request(
     url, 
@@ -20,7 +19,6 @@ for i in lines:
 	reddit_call = urllib.request.urlopen(req)
 	result = reddit_call.read().decode('utf-8')
 	results = re.findall('https?://imgur.com/a......', result)
-	print (results)
 	direct_links = re.findall('http://imgur.com/a/', result)
 	for image_url in results:
 		# This can and should be changed to a os.mkdir
@@ -34,5 +32,5 @@ for i in lines:
 			f.close() 
 for i in lines:
 	os.chdir("/home/wil/Pictures/Imguralbums/" + i)
-	os.system('for i in *; do zip -r "${i%/}.cbr" "$i" -x *.cbr; done')
+	os.system('for i in */; do zip -r "${i%/}.cbr" "$i" -x *.cbr; done')
 	os.system('rm -r */')
