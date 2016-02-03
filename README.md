@@ -19,3 +19,7 @@ Enter the name of the sub reddits you want to download from in subreddits.txt. Y
 The script will download all imguralbums from the front page of those subreddits and save the images to         ~/Pictures/Imguralbums/SUBREDDIT/RANDOMSTRING
     
 And then put them in .cbr archives so they can be read with the comic reader of your choice, meaning the end files with look like     ~/Pictures/Imguralbums/SUBREDDIT/RANDOMSTRING.cbr
+
+## WARNING
+
+The program will compress and rm all folders in the ~/Pictures/Imguralbums/SUBREDDIT dir
