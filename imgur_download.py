@@ -26,18 +26,22 @@ for i in lines:
 	print (direct_links)
 	for image_url in results:
 		# This can and should be changed to a os.mkdir
-		os.system("mkdir -p " home + "Pictures/Imguralbums/" + i)
+		os.system("mkdir -p " + home + "/Pictures/Imguralbums/" + i)
 		os.chdir(home + "/Pictures/Imguralbums/" + i)
 		if image_url not in open(downloaded).read():
 			os.system("imgurdl " + image_url)
 			# We write the downloaded url to a file so we can quickly skip already downloaded files
 			f = open(downloaded,'a')
 			f.write(image_url + '\n')
-			f.close() 
+			f.close()
+	result = result.replace('"','')
 	for d_image_url in direct_links:
 		char_set = string.ascii_uppercase + string.digits
 		randstring = ''.join(random.sample(char_set*6, 6))
-		urllib.urlretrieve(d_image_url,)
+		print ("mkdir -p " + home + "/Pictures/Imguralbums/" + i)
+		os.system("mkdir -p " + home + "/Pictures/Imguralbums/" + i)
+		print ('Downling ' + d_image_url + '\n')
+		urllib.urlretrieve(d_image_url, home + '/Pictures/Imguralbums' + i +'/' + randstring +'.jpg')
 
 for i in lines:
 	os.chdir(home + "/Pictures/Imguralbums/" + i)
