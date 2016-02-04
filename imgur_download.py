@@ -26,7 +26,7 @@ for i in lines:
 	print (direct_links)
 	for image_url in results:
 		# This can and should be changed to a os.mkdir
-		os.system("mkdir -p /home/wil/Pictures/Imguralbums/" + i)
+		os.system("mkdir -p " home + "Pictures/Imguralbums/" + i)
 		os.chdir(home + "/Pictures/Imguralbums/" + i)
 		if image_url not in open(downloaded).read():
 			os.system("imgurdl " + image_url)
