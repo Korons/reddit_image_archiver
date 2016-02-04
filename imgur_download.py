@@ -21,7 +21,8 @@ for i in lines:
 	reddit_call = urllib.request.urlopen(req)
 	result = reddit_call.read().decode('utf-8')
 	results = re.findall('https?://imgur.com/a......', result)
-	direct_links = re.findall('https?:\/\/.*.png', result)
+	# This regex is from https://stackoverflow.com/questions/169625/regex-to-check-if-valid-url-that-ends-in-jpg-png-or-gif
+	direct_links_png = re.findall('^https?://(?:[a-z0-9\-]+\.)+[a-z]{2,6}(?:/[^/#?]+)+\.(?:jpg|gif|png)$', result)
 	print (direct_links)
 	for image_url in results:
 		# This can and should be changed to a os.mkdir
@@ -37,7 +38,7 @@ for i in lines:
 	os.chdir(home + "/Pictures/Imguralbums/" + i)
 	# These system calls seem to hang the program some times no idea why
 	os.system('for i in */; do zip -r "${i%/}.cbr" "$i" -x *.cbr; done')
-	os.system('rm -r */')
+	#os.system('rm -r */')
 	# Logging 
 	time = time.strftime("%H:%M:%S:%d/%m/%Y")
 	f = open(logfile,'r+')
