@@ -13,10 +13,13 @@ Then make a folder called imgur_down in ~/.config
 Then make a file called subreddits.txt in imgur_down and a file call downloaded.txt
     touch downloaded.txt
     touch subreddits.txt
+    touch log.txt 
 
 Enter the name of the sub reddits you want to download from in subreddits.txt. You only need the subreddit name not the full url.
 
-The script will download all imguralbums from the front page of those subreddits and save the images to ~/Pictures/Imguralbums/SUBREDDIT/RANDOMSTRING
+The script will download all imguralbums from the front page of those subreddits and save the images to ~/Pictures/Imguralbums/SUBREDDIT/RANDOMSTRING/
+
+It will also download all dot jpg, png and gif files from those subreddits and save them to ~/Pictures/Imguralbums/SUBREDDIT/RANDOMSTRING.PNG/JPG/GIF
     
 And then put them in .cbr archives so they can be read with the comic reader of your choice, meaning the end files with look like ~/Pictures/Imguralbums/SUBREDDIT/RANDOMSTRING.cbr
 
