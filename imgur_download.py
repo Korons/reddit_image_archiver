@@ -5,7 +5,6 @@ import os
 import time
 import string
 import random
-
 home = os.getenv("HOME")
 downloaded = home + '/.config/imgur_down/downloaded.txt'
 SUBREDDITS = home + '/.config/imgur_down/subreddits.txt'
@@ -41,14 +40,23 @@ for i in lines:
 		char_set = string.ascii_uppercase + string.digits
 		randstring = ''.join(random.sample(char_set*6, 6))
 		os.system("mkdir -p " + home + "/Pictures/Imguralbums/" + i)
-		if not re.findall('https?://i.redditmedia.com/............................................jpg', d_image_url) and not re.findall('https?://..thumbs.redditmedia.com/............................................jpg', d_image_url) and not in open(downloaded).read():
-			print ('Downling ' + d_image_url + '\n')
+		if not re.findall('https?://i.redditmedia.com/............................................jpg', d_image_url) and not re.findall('https?://..thumbs.redditmedia.com/............................................jpg', d_image_url) and d_image_url not in open(downloaded).read():
+			print ('Downloading ' + d_image_url + ' in ' + os.getcwd() + '\n')
 			if d_image_url[-3:] == 'jpg':
-				urllib.request.urlretrieve(d_image_url, home + '/Pictures/Imguralbums' + '/' + i +'/' + randstring +'.jpg')
+				try:
+					urllib.request.urlretrieve(d_image_url, home + '/Pictures/Imguralbums' + '/' + i +'/' + randstring +'.jpg')
+				except Exception:
+					pass
 			elif d_image_url[-3:] == 'png':
-				urllib.request.urlretrieve(d_image_url, home + '/Pictures/Imguralbums' + '/' + i +'/' + randstring +'.png')
+				try:
+					urllib.request.urlretrieve(d_image_url, home + '/Pictures/Imguralbums' + '/' + i +'/' + randstring +'.png')
+				except Exception:
+					pass
 			elif d_image_url[-3:] == 'gif':
-				urllib.request.urlretrieve(d_image_url, home + '/Pictures/Imguralbums' + '/' + i +'/' + randstring +'.gif')
+				try:
+					urllib.request.urlretrieve(d_image_url, home + '/Pictures/Imguralbums' + '/' + i +'/' + randstring +'.gif')
+				except Exception:
+					pass
 			print ('Downloaded ' + d_image_url + '\n')
 			f = open(downloaded,'a')
 			f.write(d_image_url + '\n')
