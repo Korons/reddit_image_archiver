@@ -3,6 +3,9 @@ import re
 import urllib.request, urllib.parse, urllib.error, urllib
 import os
 import time
+import string
+import random
+
 home = os.getenv("HOME")
 downloaded = home + '/.config/imgur_down/downloaded.txt'
 SUBREDDITS = home + '/.config/imgur_down/subreddits.txt'
@@ -22,8 +25,6 @@ for i in lines:
 	result = reddit_call.read().decode('utf-8')
 	results = re.findall('https?://imgur.com/a......', result)
 	# This regex is from https://stackoverflow.com/questions/169625/regex-to-check-if-valid-url-that-ends-in-jpg-png-or-gif
-	direct_links = re.findall('^https?://(?:[a-z0-9\-]+\.)+[a-z]{2,6}(?:/[^/#?]+)+\.(?:jpg|gif|png)$', result)
-	print (direct_links)
 	for image_url in results:
 		# This can and should be changed to a os.mkdir
 		os.system("mkdir -p " + home + "/Pictures/Imguralbums/" + i)
@@ -35,13 +36,23 @@ for i in lines:
 			f.write(image_url + '\n')
 			f.close()
 	result = result.replace('"','')
+	direct_links = re.findall('https?://(?:[a-z0-9\-]+\.)+[a-z]{2,6}(?:/[^/#?]+)+\.(?:jpg|gif|png)', result)
 	for d_image_url in direct_links:
 		char_set = string.ascii_uppercase + string.digits
 		randstring = ''.join(random.sample(char_set*6, 6))
-		print ("mkdir -p " + home + "/Pictures/Imguralbums/" + i)
 		os.system("mkdir -p " + home + "/Pictures/Imguralbums/" + i)
-		print ('Downling ' + d_image_url + '\n')
-		urllib.urlretrieve(d_image_url, home + '/Pictures/Imguralbums' + i +'/' + randstring +'.jpg')
+		if not re.findall('https?://i.redditmedia.com/............................................jpg', d_image_url) and not re.findall('https?://..thumbs.redditmedia.com/............................................jpg', d_image_url):
+			print ('Downling ' + d_image_url + '\n')
+			if d_image_url[-3:] == 'jpg':
+				urllib.request.urlretrieve(d_image_url, home + '/Pictures/Imguralbums' + '/' + i +'/' + randstring +'.jpg')
+			elif d_image_url[-3:] == 'png':
+				urllib.request.urlretrieve(d_image_url, home + '/Pictures/Imguralbums' + '/' + i +'/' + randstring +'.png')
+			elif d_image_url[-3:] == 'gif':
+				urllib.request.urlretrieve(d_image_url, home + '/Pictures/Imguralbums' + '/' + i +'/' + randstring +'.gif')
+			print ('Downloaded ' + d_image_url + '\n')
+			f = open(downloaded,'a')
+			f.write(d_image_url + '\n')
+			f.close()
 
 for i in lines:
 	os.chdir(home + "/Pictures/Imguralbums/" + i)
@@ -53,4 +64,3 @@ for i in lines:
 	# f = open(logfile,'r+')
 	# f.write(("Ran at " + time))
 	# f.close
-
