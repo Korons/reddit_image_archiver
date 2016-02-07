@@ -35,7 +35,7 @@ for i in lines:
 			f.write(image_url + '\n')
 			f.close()
 	result = result.replace('"','')
-	direct_links = re.findall('https?://(?:[a-z0-9\-]+\.)+[a-z]{2,6}(?:/[^/#?]+)+\.(?:jpg|gif|png)', result)
+	direct_links = re.findall('https?://(?:[a-z0-9\-]+\.)+[a-z]{2,6}(?:/[^/#?]+)+\.(?:jpg|gif|png|jpeg|gifv)', result)
 	for d_image_url in direct_links:
 		char_set = string.ascii_uppercase + string.digits
 		randstring = ''.join(random.sample(char_set*6, 6))
@@ -55,6 +55,16 @@ for i in lines:
 			elif d_image_url[-3:] == 'gif':
 				try:
 					urllib.request.urlretrieve(d_image_url, home + '/Pictures/Imguralbums' + '/' + i +'/' + randstring +'.gif')
+				except Exception:
+					pass
+			elif d_image_url[-4:] == 'gifv':
+				try:
+					urllib.request.urlretrieve(d_image_url, home + '/Pictures/Imguralbums' + '/' + i +'/' + randstring +'.gifv')
+				except Exception:
+					pass
+			elif d_image_url[-4:] == 'jpeg':
+				try:
+					urllib.request.urlretrieve(d_image_url, home + '/Pictures/Imguralbums' + '/' + i +'/' + randstring +'.jpeg')
 				except Exception:
 					pass
 			print ('Downloaded ' + d_image_url + '\n')
