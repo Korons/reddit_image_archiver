@@ -6,7 +6,16 @@ Put imgur-album-downloader in your path as imgurdl
 
     sudo mv imguralbum.py /usr/bin/imgurdl
 
-Then make a folder called imgur_down in ~/.config
+And run setup.sh
+
+    ./setup.sh
+Or to do everything by hand
+
+Make a folder called Imguralbums in ~/Pictures
+
+   mkdir ~/Pictures/Imguralbums
+
+Make a folder called imgur_down in ~/.config
 
     mkdir ~/.config/imgur_down
     
