@@ -13,7 +13,7 @@ Or to do everything by hand
 
 Make a folder called Imguralbums in ~/Pictures
 
-   mkdir ~/Pictures/Imguralbums
+    mkdir ~/Pictures/Imguralbums
 
 Make a folder called imgur_down in ~/.config
 
