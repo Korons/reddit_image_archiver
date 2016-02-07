@@ -43,7 +43,9 @@ The program will compress and rm all folders in the ~/Pictures/Imguralbums/SUBRE
 How do I run this on windows?
 
 You have to change a few lines.
+
 change
+
     downloaded = home + '/.config/imgur_down/downloaded.txt'
     SUBREDDITS = home + '/.config/imgur_down/subreddits.txt'
 
@@ -53,15 +55,28 @@ to
     SUBREDDITS = home + 'C:\\subreddits.txt'
 
 remove 
+
     os.system("mkdir -p " + home + "/Pictures/Imguralbums/" + i)
 
 And make the folders for the subreddits you have in subreddits.txt by hand
 
-Change home = os.getenv("HOME") to home = 'C:'
+Change 
 
-And change all "/Pictures/Imguralbums/" to "\\Pictures\\Imguralbums\\"
+    home = os.getenv("HOME") 
+
+to 
+
+    home = 'C:'
+
+And change all 
+
+    "/Pictures/Imguralbums/" 
+
+to 
+
+    "\\Pictures\\Imguralbums\\"
 
 And change a'' '/' to '\\'
 
-WARNING: I have not tested this at all
+WARNING: I have not tested this at all. But if you have please send me a message say if this works or not
 
