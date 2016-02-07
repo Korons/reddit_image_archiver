@@ -1,5 +1,6 @@
 #!/bin/bash
-mkdir ~/.config/imgur_down
+mkdir -p ~/.config/imgur_down
+mkdir -p ~/Pictures/Imguralbums
 cd ~/.config/imgur_down
 touch downloaded.txt
 touch subreddits.txt
