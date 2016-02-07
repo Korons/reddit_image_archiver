@@ -1,5 +1,5 @@
 # reddit-imgur-download
-This is a bash script which uses imguralbum.py from https://github.com/alexgisby/imgur-album-downloader to download all imgur albums from the front page of subreddits
+This is a python script which uses imguralbum.py from https://github.com/alexgisby/imgur-album-downloader to download all imgur albums from the front page of subreddits
 
 ## Usage
 Put imgur-album-downloader in your path as imgurdl
