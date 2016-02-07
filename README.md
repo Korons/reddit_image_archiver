@@ -76,7 +76,7 @@ to
 
     "\\Pictures\\Imguralbums\\"
 
-And change a'' '/' to '\\'
+And change all '/' to '\\'
 
 WARNING: I have not tested this at all. But if you have please send me a message say if this works or not
 
