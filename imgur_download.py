@@ -23,7 +23,6 @@ for i in lines:
 	reddit_call = urllib.request.urlopen(req)
 	result = reddit_call.read().decode('utf-8')
 	results = re.findall('https?://imgur.com/a......', result)
-	# This regex is from https://stackoverflow.com/questions/169625/regex-to-check-if-valid-url-that-ends-in-jpg-png-or-gif
 	for image_url in results:
 		# This can and should be changed to a os.mkdir
 		os.system("mkdir -p " + home + "/Pictures/Imguralbums/" + i)
@@ -35,13 +34,15 @@ for i in lines:
 			f.write(image_url + '\n')
 			f.close()
 	result = result.replace('"','')
+	# This regex is from https://stackoverflow.com/questions/169625/regex-to-check-if-valid-url-that-ends-in-jpg-png-or-gif
 	direct_links = re.findall('https?://(?:[a-z0-9\-]+\.)+[a-z]{2,6}(?:/[^/#?]+)+\.(?:jpg|gif|png|jpeg|gifv)', result)
 	for d_image_url in direct_links:
 		char_set = string.ascii_uppercase + string.digits
 		randstring = ''.join(random.sample(char_set*6, 6))
 		os.system("mkdir -p " + home + "/Pictures/Imguralbums/" + i)
 		if not re.findall('https?://i.redditmedia.com/............................................jpg', d_image_url) and not re.findall('https?://..thumbs.redditmedia.com/............................................jpg', d_image_url) and d_image_url not in open(downloaded).read():
-			print ('Downloading ' + d_image_url + ' in ' + os.getcwd() + '\n')
+			print ('Downloading\n 	' + d_image_url + ' in ' + os.getcwd() + '\n')
+			# All the trys here are for 403 errors, I'm assuming becuase I haven;t hit a 403 since putting them in that they work.
 			if d_image_url[-3:] == 'jpg':
 				try:
 					urllib.request.urlretrieve(d_image_url, home + '/Pictures/Imguralbums' + '/' + i +'/' + randstring +'.jpg')
@@ -67,16 +68,16 @@ for i in lines:
 					urllib.request.urlretrieve(d_image_url, home + '/Pictures/Imguralbums' + '/' + i +'/' + randstring +'.jpeg')
 				except Exception:
 					pass
-			print ('Downloaded ' + d_image_url + '\n')
+			print ('Done\n')
 			f = open(downloaded,'a')
 			f.write(d_image_url + '\n')
 			f.close()
-
+print ('debug')
 for i in lines:
 	os.chdir(home + "/Pictures/Imguralbums/" + i)
 	# These system calls seem to hang the program some times no idea why
 	os.system('for i in */; do zip -r "${i%/}.cbr" "$i" -x *.cbr; done')
-	# os.system('rm -r */')
+	os.system('rm -r */')
 	# Logging 
 	# time = time.strftime("%H:%M:%S:%d/%m/%Y")
 	# f = open(logfile,'r+')
