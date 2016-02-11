@@ -43,7 +43,7 @@ for i in lines:
 		os.system("mkdir -p " + home + "/Pictures/Imguralbums/" + i)
 		if not re.findall('https?://i.redditmedia.com/............................................jpg', d_image_url) and not re.findall('https?://..thumbs.redditmedia.com/............................................jpg', d_image_url) and d_image_url not in open(downloaded).read():
 			print ('Downloading\n 	' + d_image_url + ' in ' + os.getcwd() + '\n')
-			# All the trys here are for 403 errors, I'm assuming becuase I haven;t hit a 403 since putting them in that they work.
+			# All the trys here are for 403 errors, I'm assuming becuase I haven't hit a 403 since putting them in that they work.
 			if d_image_url[-3:] == 'jpg':
 				try:
 					urllib.request.urlretrieve(d_image_url, home + '/Pictures/Imguralbums' + '/' + i +'/' + randstring +'.jpg')
