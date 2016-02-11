@@ -5,10 +5,11 @@ import os
 import time
 import string
 import random
+from datetime import datetime
 home = os.getenv("HOME")
 downloaded = home + '/.config/imgur_down/downloaded.txt'
 SUBREDDITS = home + '/.config/imgur_down/subreddits.txt'
-logfile = home + '/Pictures/Imguralbums/log.txt'
+logfile = home + '/.config/imgur_down/log.txt'
 with open(SUBREDDITS) as f:
 	lines = f.read().splitlines()
 	print (lines)
@@ -72,7 +73,6 @@ for i in lines:
 			f = open(downloaded,'a')
 			f.write(d_image_url + '\n')
 			f.close()
-print ('debug')
 for i in lines:
 	os.chdir(home + "/Pictures/Imguralbums/" + i)
 	# These system calls seem to hang the program some times no idea why
