@@ -40,7 +40,7 @@ The program will compress and rm all folders in the ~/Pictures/Imguralbums/SUBRE
 
 ## FAQ
 
-How do I run this on windows?
+###How do I run this on windows?
 
 You have to change a few lines.
 
@@ -80,3 +80,6 @@ And change all '/' to '\\'
 
 WARNING: I have not tested this at all. But if you have please send me a message say if this works or not
 
+###Why are some CBRs massive?
+
+As far as I can tell this is a issue with the images not with the program.
