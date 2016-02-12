@@ -9,6 +9,7 @@ Put imgur-album-downloader in your path as imgurdl
 And run setup.sh
 
     ./setup.sh
+
 Or to do everything by hand
 
 Make a folder called Imguralbums in ~/Pictures
@@ -83,3 +84,7 @@ WARNING: I have not tested this at all. But if you have please send me a message
 ###Why are some CBRs massive?
 
 As far as I can tell this is a issue with the images not with the program.
+
+###A bunch of pngs have the .jpg ext
+
+That is an issue with imduralbum.py. I'm looking into fixing it
