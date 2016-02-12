@@ -2,10 +2,8 @@ import sys
 import re
 import urllib.request, urllib.parse, urllib.error, urllib
 import os
-import time
 import string
 import random
-from datetime import datetime
 home = os.getenv("HOME")
 downloaded = home + '/.config/imgur_down/downloaded.txt'
 SUBREDDITS = home + '/.config/imgur_down/subreddits.txt'
@@ -74,6 +72,11 @@ for i in lines:
 			f.write(d_image_url + '\n')
 			f.close()
 for i in lines:
+	if os.path.isdir(home + "/Pictures/Imguralbums/" + i) == True:
+		pass
+	elif os.path.isdir(home + "/Pictures/Imguralbums/" + i) == False:
+		print ("WARNING: " + home + "/Pictures/Imguralbums/" + i + ' does not exist\nExiting')
+		sys.exit()
 	os.chdir(home + "/Pictures/Imguralbums/" + i)
 	# These system calls seem to hang the program some times no idea why
 	os.system('for i in */; do zip -r "${i%/}.cbr" "$i" -x *.cbr; done')
