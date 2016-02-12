@@ -10,7 +10,7 @@ And run setup.sh
 
     ./setup.sh
 
-Or to do everything by hand
+###Or to do everything by hand
 
 Make a folder called Imguralbums in ~/Pictures
 
