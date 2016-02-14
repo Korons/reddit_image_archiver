@@ -1,8 +1,9 @@
 # reddit-imgur-download
-This is a python script which uses imguralbum.py from https://github.com/alexgisby/imgur-album-downloader to download all imgur albums from the front page of subreddits
+This is a python script which downloads media from the front page of subreddits 
+(jpg, jpeg, png, gif, gifv and mp4 (from gfycat)) currently 
 
 ## Usage
-Put imgur-album-downloader in your path as imgurdl
+Put [imgur-album-downloader](https://github.com/alexgisby/imgur-album-downloader) in your path as imgurdl
 
     sudo mv imguralbum.py /usr/bin/imgurdl
 
