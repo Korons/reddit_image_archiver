@@ -95,12 +95,22 @@ for i in lines:
 					print ("WARNING: There was an exception downloading from a direct link (likely a 403 or 404)\n")
 					pass
 			elif d_image_url[-3:] == 'gif':
+				# Ext is the file extension
+				print ('gif down')
+				ext = '.gif'
+				# This checks if the gif is coming from imgur. If it is we change it from gif to mp4 to save on bandwidth
 				try:
-					d_image_url = d_image_url.replace('.gif','.mp4')
+					if bool(re.search('https?://i.imgur.com/\w*.gif', d_image_url)) == True:
+						print ('The bool happened\n\n\n\n===============')
+						d_image_url = d_image_url.replace('.gif','.mp4')
+						# We change the file file extension to mp4 because we are saving a mp4
+						ext = '.mp4'
 					print (d_image_url)
-					urllib.request.urlretrieve(d_image_url, home + '/Pictures/Imguralbums' + '/' + i +'/' + randstring +'.mp4')
+					urllib.request.urlretrieve(d_image_url, home + '/Pictures/Imguralbums' + '/' + i +'/' + randstring + ext)
+					# This changes mp4 to gif encase we changed it in the above if
+					d_image_url = d_image_url.replace('.mp4','.gif')
 				except Exception:
-					print ("WARNING: There was an exception downloading from gfycat (likely a 403 or 404)\n")
+					print ("WARNING: There was an exception downloading from a direct link (likely a 403 or 404)\n")
 					pass
 			elif d_image_url[-4:] == 'gifv':
 				try:
