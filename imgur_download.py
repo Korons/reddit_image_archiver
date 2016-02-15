@@ -40,9 +40,8 @@ for i in lines:
 	direct_links = re.findall('https?://(?:[a-z0-9\-]+\.)+[a-z]{2,6}(?:/[^/#?]+)+\.(?:jpg|gif|png|jpeg|gifv)', result)
 	# This regex with get all links to gfycat
 	gfycat_links = re.findall('https?://gfycat.com/\w*', result)
-	print (gfycat_links)
 	for gfy_links in gfycat_links:
-		# DO NOT MOVE THE RANDSTRING. If you do it may only generate 1 randon string and overwrite all downloaded files!
+		# DO NOT MOVE THE RANDSTRING. If you do it may only generate 1 random string and overwrite all downloaded files!
 		char_set = string.ascii_uppercase + string.digits
 		randstring = ''.join(random.sample(char_set*6, 6))
 		# We need to get the mp4 from the link. We get the mp4 and not the gif to save on bandwidth
@@ -51,7 +50,8 @@ for i in lines:
 		# This chanages http to https
 		down_gfy_link = down_gfy_link.replace('http://','https://')
 		down_gfy_link = down_gfy_link + '.mp4'
-		if down_gfy_link not in open(downloaded).read():
+		if gfy_links not in open(downloaded).read():
+			print (gfy_links)
 			print ('Downloading\n 	' + down_gfy_link + ' in ' + os.getcwd() + '\n')
 			try:
 				urllib.request.urlretrieve(down_gfy_link, home + '/Pictures/Imguralbums' + '/' + i +'/' + randstring +'.mp4')
@@ -70,7 +70,7 @@ for i in lines:
 					pass
 			print ('Done!\n\n')
 			f = open(downloaded,'a')
-			f.write(down_gfy_link + '\n')
+			f.write(gfy_links + '\n')
 			f.close()
 	for d_image_url in direct_links:
 		# DO NOT MOVE THE RANDSTRING. If you do it may only generate 1 randon string and overwrite all downloaded files!
@@ -96,7 +96,9 @@ for i in lines:
 					pass
 			elif d_image_url[-3:] == 'gif':
 				try:
-					urllib.request.urlretrieve(d_image_url, home + '/Pictures/Imguralbums' + '/' + i +'/' + randstring +'.gif')
+					d_image_url = d_image_url.replace('.gif','.mp4')
+					print (d_image_url)
+					urllib.request.urlretrieve(d_image_url, home + '/Pictures/Imguralbums' + '/' + i +'/' + randstring +'.mp4')
 				except Exception:
 					print ("WARNING: There was an exception downloading from gfycat (likely a 403 or 404)\n")
 					pass
