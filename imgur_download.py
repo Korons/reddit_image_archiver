@@ -8,25 +8,33 @@ home = os.getenv("HOME")
 downloaded = home + '/.config/imgur_down/downloaded.txt'
 SUBREDDITS = home + '/.config/imgur_down/subreddits.txt'
 logfile = home + '/.config/imgur_down/log.txt'
+download_dir = home + '/Pictures/Imguralbums'
 
+def image_down(url,ext):
+	# All the trys here are for 403/404 errors
+	try:
+		urllib.request.urlretrieve(url, download_dir + '/' + i + '/' + randstring + ext)
+	except Exception:
+		print ("WARNING: There was an exception downloading from a direct link (likely a 403 or 404)\n")
+		pass
 
 with open(SUBREDDITS) as f:
 	lines = f.read().splitlines()
 	print (lines)
 for i in lines:
-	url = "https://reddit.com/r/" + i + ".json"
+	reddit_url = "https://reddit.com/r/" + i + ".json"
 	req = urllib.request.Request(
-    url, 
+    reddit_url, 
     # The user-agent we send so we don't get massively limited
     headers={'User-Agent': "abotbyATGUNAT"}
 	)
-	print (url)
+	print (reddit_url)
 	reddit_call = urllib.request.urlopen(req)
 	result = reddit_call.read().decode('utf-8')
 	results = re.findall('https?://imgur.com/a......', result)
 	for image_url in results:
 		# This can and should be changed to a os.mkdir
-		os.system("mkdir -p " + home + "/Pictures/Imguralbums/" + i)
+		os.system("mkdir -p " + download_dir + '/' + i)
 		os.chdir(home + "/Pictures/Imguralbums/" + i)
 		if image_url not in open(downloaded).read():
 			os.system("imgurdl " + image_url)
@@ -52,18 +60,18 @@ for i in lines:
 		down_gfy_link = down_gfy_link + '.mp4'
 		if gfy_links not in open(downloaded).read():
 			print (gfy_links)
-			print ('Downloading\n 	' + down_gfy_link + ' in ' + os.getcwd() + '\n')
+			print ('Downloading\n 	' + down_gfy_link + ' in ' + download_dir + '/' + ' as ' + i + '\n')
 			try:
-				urllib.request.urlretrieve(down_gfy_link, home + '/Pictures/Imguralbums' + '/' + i +'/' + randstring +'.mp4')
+				urllib.request.urlretrieve(down_gfy_link, download_dir + '/' + i + '/' + randstring +'.mp4')
 			except Exception:
 				print ("WARNING: There was an exception downloading from gfycat (likely a 403 or 404)\n")
 				try:
 					# Here we try to use the fat.gfycat.com server instead of the giant.gfycat.com. For some reason we get a 
-					# 403 if we use the wrong one when we try to the mp4
+					# 403 if we use the wrong one when we try the mp4
 					down_gfy_link = down_gfy_link.replace('giant','fat')
 					print ('Trying fat.gfycat.com\n')
-					print ('Downloading\n 	' + down_gfy_link + ' in ' + os.getcwd() + '\n')
-					urllib.request.urlretrieve(down_gfy_link, home + '/Pictures/Imguralbums' + '/' + i +'/' + randstring +'.mp4')
+					print ('Downloading\n 	' + down_gfy_link + ' in ' + download_dir + '/' + i + ' as ' + randstring + '\n')
+					urllib.request.urlretrieve(down_gfy_link, download_dir + '/' + i +'/' + randstring +'.mp4')
 				except Exception:
 					# I'm not going to code all the back up servers right now because tracking them all down is a pain
 					print ('fat.gfycat failed\n')
@@ -73,74 +81,48 @@ for i in lines:
 			f.write(gfy_links + '\n')
 			f.close()
 	for d_image_url in direct_links:
-		# DO NOT MOVE THE RANDSTRING. If you do it may only generate 1 randon string and overwrite all downloaded files!
+		# DO NOT MOVE THE RANDSTRING. If you do it may only generate 1 random string and overwrite all downloaded files!
 		char_set = string.ascii_uppercase + string.digits
 		randstring = ''.join(random.sample(char_set*6, 6))
 		os.system("mkdir -p " + home + "/Pictures/Imguralbums/" + i)
 		# The d_image_url not in open(downloaded).read() is what keeps this from redownloading images
 		# This stops us from downloading (some) thumbnails
 		if not re.findall('https?://i.redditmedia.com/............................................jpg', d_image_url) and not re.findall('https?://..thumbs.redditmedia.com/............................................jpg', d_image_url) and d_image_url not in open(downloaded).read():
-			print ('Downloading\n 	' + d_image_url + ' in ' + os.getcwd() + '\n')
-			# All the trys here are for 403/404 errors
+			print ('Downloading\n 	' + d_image_url + ' in ' + download_dir + '/' + i + ' as ' + randstring + '\n')
 			if d_image_url[-3:] == 'jpg':
-				try:
-					urllib.request.urlretrieve(d_image_url, home + '/Pictures/Imguralbums' + '/' + i +'/' + randstring +'.jpg')
-				except Exception:
-					print ("WARNING: There was an exception downloading from a direct link (likely a 403 or 404)\n")
-					pass
+				image_down(d_image_url,'.jpg')
 			elif d_image_url[-3:] == 'png':
-				try:
-					urllib.request.urlretrieve(d_image_url, home + '/Pictures/Imguralbums' + '/' + i +'/' + randstring +'.png')
-				except Exception:
-					print ("WARNING: There was an exception downloading from a direct link (likely a 403 or 404)\n")
-					pass
+				image_down(d_image_url,'.png')
 			elif d_image_url[-3:] == 'gif':
 				# Ext is the file extension
-				print ('gif down')
-				ext = '.gif'
 				# This checks if the gif is coming from imgur. If it is we change it from gif to mp4 to save on bandwidth
+				#TODO clean this up
 				try:
 					if bool(re.search('https?://i.imgur.com/\w*.gif', d_image_url)) == True:
-						print ('The bool happened\n\n\n\n===============')
 						d_image_url = d_image_url.replace('.gif','.mp4')
-						# We change the file file extension to mp4 because we are saving a mp4
-						ext = '.mp4'
-					print (d_image_url)
-					urllib.request.urlretrieve(d_image_url, home + '/Pictures/Imguralbums' + '/' + i +'/' + randstring + ext)
-					# This changes mp4 to gif encase we changed it in the above if
-					d_image_url = d_image_url.replace('.mp4','.gif')
+						image_down(d_image_url,'.mp4')
+						d_image_url = d_image_url.replace('.mp4','.gif')
+					else:
+						image_down(d_image_url,'.gif')
 				except Exception:
 					print ("WARNING: There was an exception downloading from a direct link (likely a 403 or 404)\n")
 					pass
 			elif d_image_url[-4:] == 'gifv':
-				try:
-					urllib.request.urlretrieve(d_image_url, home + '/Pictures/Imguralbums' + '/' + i +'/' + randstring +'.gifv')
-				except Exception:
-					print ("WARNING: There was an exception downloading from gfycat (likely a 403 or 404)\n")
-					pass
+				image_down(d_image_url,'.gifv')
 			elif d_image_url[-4:] == 'jpeg':
-				try:
-					urllib.request.urlretrieve(d_image_url, home + '/Pictures/Imguralbums' + '/' + i +'/' + randstring +'.jpeg')
-				except Exception:
-					print ("WARNING: There was an exception downloading from gfycat (likely a 403 or 404)\n")
-					pass
+				image_down(d_image_url,'.jpeg')
 			print ('Done\n')
 			# We need to added downloaded urls to the list so we don't redownload them
 			f = open(downloaded,'a')
 			f.write(d_image_url + '\n')
 			f.close()
 for i in lines:
-	if os.path.isdir(home + "/Pictures/Imguralbums/" + i) == True:
+	if os.path.isdir(download_dir + '/' + i) == True:
 		pass
-	elif os.path.isdir(home + "/Pictures/Imguralbums/" + i) == False:
-		print ("WARNING: " + home + "/Pictures/Imguralbums/" + i + ' does not exist\nExiting')
+	elif os.path.isdir(download_dir + '/' + i) == False:
+		print ("WARNING: " + download_dir + '/' + i + ' does not exist\nExiting')
 		sys.exit()
-	os.chdir(home + "/Pictures/Imguralbums/" + i)
+	os.chdir(download_dir + '/' + i)
 	# These system calls seem to hang the program some times no idea why
 	os.system('for i in */; do zip -r "${i%/}.cbr" "$i" -x *.cbr; done')
 	os.system('rm -r */')
-	# Logging 
-	# time = time.strftime("%H:%M:%S:%d/%m/%Y")
-	# f = open(logfile,'r+')
-	# f.write(("Ran at " + time))
-	# f.close
