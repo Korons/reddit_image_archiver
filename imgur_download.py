@@ -60,7 +60,7 @@ for i in lines:
 		down_gfy_link = down_gfy_link + '.mp4'
 		if gfy_links not in open(downloaded).read():
 			print (gfy_links)
-			print ('Downloading\n 	' + down_gfy_link + ' in ' + download_dir + '/' + ' as ' + i + '\n')
+			print ('Downloading\n 	' + down_gfy_link + ' in ' + download_dir + '/' + i + ' as ' + randstring + '\n')
 			try:
 				urllib.request.urlretrieve(down_gfy_link, download_dir + '/' + i + '/' + randstring +'.mp4')
 			except Exception:
