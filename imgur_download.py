@@ -4,14 +4,17 @@ import urllib.request, urllib.parse, urllib.error, urllib
 import os
 import string
 import random
+import time
 home = os.getenv("HOME")
 downloaded = home + '/.config/imgur_down/downloaded.txt'
 SUBREDDITS = home + '/.config/imgur_down/subreddits.txt'
 logfile = home + '/.config/imgur_down/log.txt'
 download_dir = home + '/Pictures/Imguralbums'
+imgur_albums_count = 0
+picture_links_count = 0
+gif_links_count = 0
 
 def image_down(url,ext):
-	# All the trys here are for 403/404 errors
 	try:
 		urllib.request.urlretrieve(url, download_dir + '/' + i + '/' + randstring + ext)
 	except Exception:
@@ -24,9 +27,9 @@ with open(SUBREDDITS) as f:
 for i in lines:
 	reddit_url = "https://reddit.com/r/" + i + ".json"
 	req = urllib.request.Request(
-    reddit_url, 
-    # The user-agent we send so we don't get massively limited
-    headers={'User-Agent': "abotbyATGUNAT"}
+	reddit_url,
+	# The user-agent we send so we don't get massively limited
+	headers={'User-Agent': "abotbyATGUNAT"}
 	)
 	print (reddit_url)
 	reddit_call = urllib.request.urlopen(req)
@@ -38,6 +41,7 @@ for i in lines:
 		os.chdir(home + "/Pictures/Imguralbums/" + i)
 		if image_url not in open(downloaded).read():
 			os.system("imgurdl " + image_url)
+			imgur_albums_count = imgur_albums_count + 1
 			# We write the downloaded url to a file so we can quickly skip already downloaded files
 			f = open(downloaded,'a')
 			f.write(image_url + '\n')
@@ -59,19 +63,20 @@ for i in lines:
 		down_gfy_link = down_gfy_link.replace('http://','https://')
 		down_gfy_link = down_gfy_link + '.mp4'
 		if gfy_links not in open(downloaded).read():
-			print (gfy_links)
 			print ('Downloading\n 	' + down_gfy_link + ' in ' + download_dir + '/' + i + ' as ' + randstring + '\n')
 			try:
 				urllib.request.urlretrieve(down_gfy_link, download_dir + '/' + i + '/' + randstring +'.mp4')
+				gif_links_count = gif_links_count + 1
 			except Exception:
 				print ("WARNING: There was an exception downloading from gfycat (likely a 403 or 404)\n")
 				try:
-					# Here we try to use the fat.gfycat.com server instead of the giant.gfycat.com. For some reason we get a 
+					# Here we try to use the fat.gfycat.com server instead of the giant.gfycat.com. For some reason we get a
 					# 403 if we use the wrong one when we try the mp4
 					down_gfy_link = down_gfy_link.replace('giant','fat')
 					print ('Trying fat.gfycat.com\n')
 					print ('Downloading\n 	' + down_gfy_link + ' in ' + download_dir + '/' + i + ' as ' + randstring + '\n')
 					urllib.request.urlretrieve(down_gfy_link, download_dir + '/' + i +'/' + randstring +'.mp4')
+					gif_links_count = gif_links_count + 1
 				except Exception:
 					# I'm not going to code all the back up servers right now because tracking them all down is a pain
 					print ('fat.gfycat failed\n')
@@ -91,8 +96,11 @@ for i in lines:
 			print ('Downloading\n 	' + d_image_url + ' in ' + download_dir + '/' + i + ' as ' + randstring + '\n')
 			if d_image_url[-3:] == 'jpg':
 				image_down(d_image_url,'.jpg')
+				picture_links_count = picture_links_count + 1
 			elif d_image_url[-3:] == 'png':
 				image_down(d_image_url,'.png')
+				picture_links_count = picture_links_count + 1
+
 			elif d_image_url[-3:] == 'gif':
 				# Ext is the file extension
 				# This checks if the gif is coming from imgur. If it is we change it from gif to mp4 to save on bandwidth
@@ -126,3 +134,6 @@ for i in lines:
 	# These system calls seem to hang the program some times no idea why
 	os.system('for i in */; do zip -r "${i%/}.cbr" "$i" -x *.cbr; done')
 	os.system('rm -r */')
+print ('Done!')
+total = picture_links_count + gif_links_count + imgur_albums_count
+print ('Downloaded\n{0} Pictures\n{1} Gyfs\n{2} Imgur Albums\n{3} Total items downloaded'.format(picture_links_count, gif_links_count, imgur_albums_count, total))
