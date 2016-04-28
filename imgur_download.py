@@ -80,7 +80,7 @@ for i in lines:
                     # 403 if we use the wrong one when we try the mp4
                     down_gfy_link = down_gfy_link.replace('giant', 'fat')
                     print ('Trying fat.gfycat.com\n')
-                    print ('Downloading\n     ' + down_gfy_link + ' in ' + download_dir + '/' + i + ' as ' + randstring + '\n')
+                    print ('Downloading\n      {0} in {1}/{2} as {3} \n'.format(down_gfy_link, download_dir, i, randstring))
                     urllib.request.urlretrieve(down_gfy_link, download_dir + '/' + i + '/' + randstring + '.mp4')
                     gif_links_count = gif_links_count + 1
                 except Exception:
@@ -128,12 +128,12 @@ for i in lines:
             f.write(d_image_url + '\n')
             f.close()
 for i in lines:
-    if os.path.isdir(download_dir + '/' + i) == True:
+    if os.path.isdir('{0}/{1}'.format(download_dir, i)) == True:
         pass
     elif os.path.isdir(download_dir + '/' + i) == False:
-        print ("WARNING: " + download_dir + '/' + i + ' does not exist\nExiting')
+        print ('WARNING: {0}/{1} does not exist\nExiting'.format(download_dir, i))
         sys.exit()
-    os.chdir(download_dir + '/' + i)
+    os.chdir('{0}/{1}'.format(download_dir, i))
     # These system calls seem to hang the program some times no idea why
     os.system('for i in */; do zip -r "${i%/}.cbr" "$i" -x *.cbr; done')
     os.system('rm -r */')
