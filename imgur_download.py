@@ -98,30 +98,25 @@ for i in lines:
         os.system("mkdir -p " + home + "/Pictures/Imguralbums/" + i)
         # The d_image_url not in open(downloaded).read() is what keeps this from redownloading images
         # This stops us from downloading (some) thumbnails
+        # TODO clean this up.
         if not re.findall('https?://i.redditmedia.com/............................................jpg', d_image_url) and not re.findall('https?://..thumbs.redditmedia.com/............................................jpg', d_image_url) and d_image_url not in open(downloaded).read():
-            print ('Downloading\n     ' + d_image_url + ' in ' + download_dir + '/' + i + ' as ' + randstring + '\n')
-            if d_image_url[-3:] == 'jpg':
-                image_down(d_image_url, '.jpg')
+            print ('Downloading\n     {0} in {1}/{2} as {3}\n'.format(d_image_url, download_dir, i, randstring))
+            if '.' in d_image_url[-4:] and bool(re.search('https?://i.imgur.com/\w*.gif', d_image_url)) == False:
+                image_down(d_image_url, d_image_url[-4:])
                 picture_links_count = picture_links_count + 1
-            elif d_image_url[-3:] == 'png':
-                image_down(d_image_url, '.png')
-                picture_links_count = picture_links_count + 1
-            elif d_image_url[-3:] == 'gif':
+            elif '.' in d_image_url[-4:] and bool(re.search('https?://i.imgur.com/\w*.gif', d_image_url)) == True:
                 # This checks if the gif is coming from imgur. If it is we change it from gif to mp4 to save on bandwidth
                 try:
-                    if bool(re.search('https?://i.imgur.com/\w*.gif', d_image_url)) == True:
-                        d_image_url = d_image_url.replace('.gif', '.mp4')
-                        image_down(d_image_url, '.mp4')
-                        d_image_url = d_image_url.replace('.mp4', '.gif')
-                    else:
-                        image_down(d_image_url, '.gif')
+                    d_image_url = d_image_url.replace('.gif', '.mp4')
+                    image_down(d_image_url, '.mp4')
+                    d_image_url = d_image_url.replace('.mp4', '.gif')
+
                 except Exception:
                     print ("WARNING: There was an exception downloading from a direct link (likely a 403 or 404)\n")
                     pass
-            elif d_image_url[-4:] == 'gifv':
-                image_down(d_image_url, '.gifv')
-            elif d_image_url[-4:] == 'jpeg':
-                image_down(d_image_url, '.jpeg')
+            elif '.' in d_image_url[-5:]:
+                image_down(d_image_url, d_image_url[-5:])
+                picture_links_count = picture_links_count + 1
             print ('Done\n')
             # We need to added downloaded urls to the list so we don't redownload them
             f = open(downloaded, 'a')
