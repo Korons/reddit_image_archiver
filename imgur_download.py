@@ -21,28 +21,40 @@ imgur_albums_count = 0
 picture_links_count = 0
 gif_links_count = 0
 
+# The pid for the lock file
+pid = str(os.getpid())
+pidfile = "/tmp/rid.pid"
 
 def image_down(url, ext):
     try:
         urllib.request.urlretrieve(url, download_dir + '/' + i + '/' + randstring + ext)
-    except Exception:
+    except urllib.error.URLError:
         print ("WARNING: There was an exception downloading from a direct link (likely a 403 or 404)\n")
         pass
 
+# If the lock file exists we exit
+if os.path.isfile(pidfile):
+    print ("{0} already exists, exiting".format(pidfile))
+    sys.exit()
+
+with open(pidfile, mode='w') as f:
+    f.write(str(pid))
+
 with open(SUBREDDITS) as f:
     lines = f.read().splitlines()
-    print (lines)
+    print(lines)
 for i in lines:
     reddit_url = "https://reddit.com/r/{0}.json".format(i)
     req = urllib.request.Request(reddit_url,
-    # The user-agent we send so we don't get massively limited
-    headers={'User-Agent': "abotbyATGUNAT"})
-    print (reddit_url)
+    #The user-agent we send so we don't get massively limited
+    headers={'User-Agent': "AbotbyATGUNAT"})
+    print('checking {0}'.format(i))
     reddit_call = urllib.request.urlopen(req)
     result = reddit_call.read().decode('utf-8')
-    results = re.findall('https?://imgur.com/a......', result)
+    # https?://https?://m?.?imgur.com/a......
+    results = re.findall('https?://m?.?imgur.com/a......', result)
     for image_url in results:
-        # This can and should be changed to a os.mkdir
+        # TODO This can and should be changed to a os.mkdir
         os.system('mkdir -p {0}/{1}'.format(download_dir, i))
         os.chdir('{0}/{1}'.format(download_dir, i))
         if image_url not in open(downloaded).read():
@@ -73,7 +85,7 @@ for i in lines:
             try:
                 urllib.request.urlretrieve(down_gfy_link, download_dir + '/' + i + '/' + randstring +'.mp4')
                 gif_links_count = gif_links_count + 1
-            except Exception:
+            except urllib.error.URLError:
                 print ("WARNING: There was an exception downloading from gfycat (likely a 403 or 404)\n")
                 try:
                     # Here we try to use the fat.gfycat.com server instead of the giant.gfycat.com. For some reason we get a
@@ -83,11 +95,11 @@ for i in lines:
                     print ('Downloading\n      {0} in {1}/{2} as {3} \n'.format(down_gfy_link, download_dir, i, randstring))
                     urllib.request.urlretrieve(down_gfy_link, download_dir + '/' + i + '/' + randstring + '.mp4')
                     gif_links_count = gif_links_count + 1
-                except Exception:
+                except urllib.error.URLError:
                     # I'm not going to code all the back up servers right now because tracking them all down is a pain
                     print ('fat.gfycat failed\n')
                     pass
-            print ('Done!\n\n')
+            print('Done!\n\n')
             f = open(downloaded, 'a')
             f.write(gfy_links + '\n')
             f.close()
@@ -111,7 +123,7 @@ for i in lines:
                     image_down(d_image_url, '.mp4')
                     d_image_url = d_image_url.replace('.mp4', '.gif')
 
-                except Exception:
+                except urllib.error.URLError:
                     print ("WARNING: There was an exception downloading from a direct link (likely a 403 or 404)\n")
                     pass
             elif '.' in d_image_url[-5:]:
@@ -130,7 +142,7 @@ for i in lines:
         sys.exit()
     os.chdir('{0}/{1}'.format(download_dir, i))
     # These system calls seem to hang the program some times no idea why
-    os.system('for i in */; do zip -r "${i%/}.cbr" "$i" -x *.cbr; done')
+    os.system('for i in */; do zip -r "${i%/}.cbz" "$i" -x *.cbr; done')
     os.system('rm -r */')
 print ('Done!')
 total = picture_links_count + gif_links_count + imgur_albums_count
@@ -143,3 +155,6 @@ print ('''Downloaded:\n
 {1} Gyfs\n
 {2} Imgur Albums\n
 {3} Total items downloaded\n'''.format(picture_links_count, gif_links_count, imgur_albums_count, total))
+
+# We remove the pid file
+os.unlink(pidfile)
