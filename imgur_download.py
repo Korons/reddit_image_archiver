@@ -9,9 +9,11 @@ import string
 import random
 import time
 import argparse
+
 parser = argparse.ArgumentParser(description='Download images from reddit')
 parser.add_argument("-l", help="Log number of downloaded files", action="store_true")
 args = parser.parse_args()
+
 home = os.getenv("HOME")
 downloaded = '{0}/.config/imgur_down/downloaded.txt'.format(home)
 SUBREDDITS = '{0}/.config/imgur_down/subreddits.txt'.format(home)
@@ -25,17 +27,33 @@ gif_links_count = 0
 pid = str(os.getpid())
 pidfile = "/tmp/rid.pid"
 
+
+def pid_exists(pid):
+    try:
+        os.kill(int(pid), 0)
+        return False
+    except OSError:
+        return True
+
+
 def image_down(url, ext):
     try:
         urllib.request.urlretrieve(url, download_dir + '/' + i + '/' + randstring + ext)
     except urllib.error.URLError:
-        print ("WARNING: There was an exception downloading from a direct link (likely a 403 or 404)\n")
+        print("WARNING: There was an exception downloading from a direct link (likely a 403 or 404)\n")
         pass
 
 # If the lock file exists we exit
 if os.path.isfile(pidfile):
-    print ("{0} already exists, exiting".format(pidfile))
-    sys.exit()
+    if pid_exists(open(pidfile).read()) == True:
+        print("Found stale lockfile, removing")
+        os.unlink(pidfile)
+    elif pid_exists(open(pidfile).read()) == False:
+        print("{0} already exists, exiting".format(pidfile))
+        sys.exit()
+    else:
+        print('Something went wrong')
+        sys.exit()
 
 with open(pidfile, mode='w') as f:
     f.write(str(pid))
@@ -48,7 +66,7 @@ for i in lines:
     req = urllib.request.Request(reddit_url,
     #The user-agent we send so we don't get massively limited
     headers={'User-Agent': "AbotbyATGUNAT"})
-    print('checking {0}'.format(i))
+    print('Checking: {0}'.format(i))
     reddit_call = urllib.request.urlopen(req)
     result = reddit_call.read().decode('utf-8')
     # https?://https?://m?.?imgur.com/a......
@@ -58,7 +76,7 @@ for i in lines:
         os.system('mkdir -p {0}/{1}'.format(download_dir, i))
         os.chdir('{0}/{1}'.format(download_dir, i))
         if image_url not in open(downloaded).read():
-            os.system('imgurdl {0}'.format(image_url))
+            os.system('torsocks imgurdl {0}'.format(image_url))
             imgur_albums_count = imgur_albums_count + 1
             # We write the downloaded url to a file so we can quickly skip already downloaded files
             f = open(downloaded, 'a')
@@ -81,23 +99,23 @@ for i in lines:
         down_gfy_link = down_gfy_link.replace('http://', 'https://')
         down_gfy_link = down_gfy_link + '.mp4'
         if gfy_links not in open(downloaded).read():
-            print ('Downloading\n      {0} in {1}/{2} as {3} \n'.format(down_gfy_link, download_dir, i, randstring))
+            print('Downloading\n      {0} in {1}/{2} as {3} \n'.format(down_gfy_link, download_dir, i, randstring))
             try:
                 urllib.request.urlretrieve(down_gfy_link, download_dir + '/' + i + '/' + randstring +'.mp4')
                 gif_links_count = gif_links_count + 1
             except urllib.error.URLError:
-                print ("WARNING: There was an exception downloading from gfycat (likely a 403 or 404)\n")
+                print("WARNING: There was an exception downloading from gfycat (likely a 403 or 404)\n")
                 try:
                     # Here we try to use the fat.gfycat.com server instead of the giant.gfycat.com. For some reason we get a
                     # 403 if we use the wrong one when we try the mp4
                     down_gfy_link = down_gfy_link.replace('giant', 'fat')
-                    print ('Trying fat.gfycat.com\n')
-                    print ('Downloading\n      {0} in {1}/{2} as {3} \n'.format(down_gfy_link, download_dir, i, randstring))
+                    print('Trying fat.gfycat.com\n')
+                    print('Downloading\n      {0} in {1}/{2} as {3} \n'.format(down_gfy_link, download_dir, i, randstring))
                     urllib.request.urlretrieve(down_gfy_link, download_dir + '/' + i + '/' + randstring + '.mp4')
                     gif_links_count = gif_links_count + 1
                 except urllib.error.URLError:
                     # I'm not going to code all the back up servers right now because tracking them all down is a pain
-                    print ('fat.gfycat failed\n')
+                    print('fat.gfycat failed\n')
                     pass
             print('Done!\n\n')
             f = open(downloaded, 'a')
@@ -112,7 +130,7 @@ for i in lines:
         # This stops us from downloading (some) thumbnails
         # TODO clean this up.
         if not re.findall('https?://i.redditmedia.com/............................................jpg', d_image_url) and not re.findall('https?://..thumbs.redditmedia.com/............................................jpg', d_image_url) and d_image_url not in open(downloaded).read():
-            print ('Downloading\n     {0} in {1}/{2} as {3}\n'.format(d_image_url, download_dir, i, randstring))
+            print('Downloading\n     {0} in {1}/{2} as {3}\n'.format(d_image_url, download_dir, i, randstring))
             if '.' in d_image_url[-4:] and bool(re.search('https?://i.imgur.com/\w*.gif', d_image_url)) == False:
                 image_down(d_image_url, d_image_url[-4:])
                 picture_links_count = picture_links_count + 1
@@ -124,12 +142,12 @@ for i in lines:
                     d_image_url = d_image_url.replace('.mp4', '.gif')
 
                 except urllib.error.URLError:
-                    print ("WARNING: There was an exception downloading from a direct link (likely a 403 or 404)\n")
+                    print("WARNING: There was an exception downloading from a direct link (likely a 403 or 404)\n")
                     pass
             elif '.' in d_image_url[-5:]:
                 image_down(d_image_url, d_image_url[-5:])
                 picture_links_count = picture_links_count + 1
-            print ('Done\n')
+            print('Done\n')
             # We need to added downloaded urls to the list so we don't redownload them
             f = open(downloaded, 'a')
             f.write(d_image_url + '\n')
@@ -138,19 +156,19 @@ for i in lines:
     if os.path.isdir('{0}/{1}'.format(download_dir, i)) == True:
         pass
     elif os.path.isdir(download_dir + '/' + i) == False:
-        print ('WARNING: {0}/{1} does not exist\nExiting'.format(download_dir, i))
+        print('WARNING: {0}/{1} does not exist\nExiting'.format(download_dir, i))
         sys.exit()
     os.chdir('{0}/{1}'.format(download_dir, i))
     # These system calls seem to hang the program some times no idea why
     os.system('for i in */; do zip -r "${i%/}.cbz" "$i" -x *.cbr; done')
     os.system('rm -r */')
-print ('Done!')
+print('Done!')
 total = picture_links_count + gif_links_count + imgur_albums_count
 if args.l:
     date_finished = time.strftime("[%d/%m/%Y_%H:%M:%S]")
     with open(logfile, mode='a') as log:
-        print (date_finished + '\nDownloaded:\n{0} Pictures\n{1} Gyfs\n{2} Imgur Albums\n{3} Total items downloaded'.format(picture_links_count, gif_links_count, imgur_albums_count, total), file=log)
-print ('''Downloaded:\n
+        print(date_finished + '\nDownloaded:\n{0} Pictures\n{1} Gyfs\n{2} Imgur Albums\n{3} Total items downloaded'.format(picture_links_count, gif_links_count, imgur_albums_count, total), file=log)
+print('''Downloaded:\n
 {0} Pictures\n
 {1} Gyfs\n
 {2} Imgur Albums\n
