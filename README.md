@@ -63,7 +63,3 @@ This was made to run on Linux based systems and it cannot be run on windows as i
 ### Why are some CBRs massive?
 
 As far as I can tell this is a issue with the images not with the program.
-
-### A bunch of pngs have the .jpg ext
-
-That is an issue with imduralbum.py. I'm looking into fixing it
