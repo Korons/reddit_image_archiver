@@ -58,7 +58,7 @@ The program will compress and delete all folders in the ~/Pictures/Imguralbums/S
 
 ### How do I run this on windows?
 
-This was made to run on Linux based systems and it cannot be run on windows as it is.
+This was made to run on Linux based systems and it cannot be run on windows as it is. In order to run it on windows you would need to comment out the lines using system calls and change all the paths to windows valid ones.
 
 ### Why are some CBRs massive?
 
