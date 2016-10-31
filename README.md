@@ -33,7 +33,7 @@ The script will download all imguralbums from the front page of those subreddits
 
 It will also download all dot jpg, png and gif files from those posts on those subreddits and save them to ~/Pictures/Imguralbums/SUBREDDIT/RANDOMSTRING.PNG|JPG|GIF
 
-And then put them in .cbr archives so they can be read with the comic reader of your choice, meaning the end files with look like ~/Pictures/Imguralbums/SUBREDDIT/RANDOMSTRING.cbr
+And then put them in .cbz archives so they can be read with the comic reader of your choice, meaning the end files with look like ~/Pictures/Imguralbums/SUBREDDIT/RANDOMSTRING.cbz
 
 They can be view with any comic reader
 
