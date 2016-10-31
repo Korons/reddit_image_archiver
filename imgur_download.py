@@ -45,10 +45,10 @@ def image_down(url, ext):
 
 # If the lock file exists we exit
 if os.path.isfile(pidfile):
-    if pid_exists(open(pidfile).read()) == True:
+    if pid_exists(open(pidfile).read()) is True:
         print("Found stale lockfile, removing")
         os.unlink(pidfile)
-    elif pid_exists(open(pidfile).read()) == False:
+    elif pid_exists(open(pidfile).read()) is False:
         print("{0} already exists, exiting".format(pidfile))
         sys.exit()
     else:
