@@ -159,7 +159,8 @@ for i in lines:
         print('WARNING: {0}/{1} does not exist\nExiting'.format(download_dir, i))
         sys.exit()
     os.chdir('{0}/{1}'.format(download_dir, i))
-    # These system calls seem to hang the program some times no idea why
+    # We use system calls instead of a zip lib because of laziness
+    # TODO change to zip lib so this can run on windows
     os.system('for i in */; do zip -r "${i%/}.cbz" "$i" -x *.cbr; done')
     os.system('rm -r */')
 print('Done!')
