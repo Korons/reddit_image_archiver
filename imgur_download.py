@@ -52,7 +52,7 @@ if os.path.isfile(pidfile):
         print("{0} already exists, exiting".format(pidfile))
         sys.exit()
     else:
-        print('Something went wrong')
+        print('Unable to write lockfile')
         sys.exit()
 
 with open(pidfile, mode='w') as f:
