@@ -73,10 +73,11 @@ for i in lines:
     results = re.findall('https?://m?.?imgur.com/a......', result)
     for image_url in results:
         # TODO This can and should be changed to a os.mkdir
-        os.system('mkdir -p {0}/{1}'.format(download_dir, i))
+        # os.system('mkdir -p {0}/{1}'.format(download_dir, i))
+        os.makedirs('{0}/{1}'.format(download_dir, i), exist_ok=True)
         os.chdir('{0}/{1}'.format(download_dir, i))
         if image_url not in open(downloaded).read():
-            os.system('torsocks imgurdl {0}'.format(image_url))
+            os.system('imgurdl {0}'.format(image_url))
             imgur_albums_count = imgur_albums_count + 1
             # We write the downloaded url to a file so we can quickly skip already downloaded files
             f = open(downloaded, 'a')
