@@ -72,8 +72,6 @@ for i in lines:
     # https?://https?://m?.?imgur.com/a......
     results = re.findall('https?://m?.?imgur.com/a......', result)
     for image_url in results:
-        # TODO This can and should be changed to a os.mkdir
-        # os.system('mkdir -p {0}/{1}'.format(download_dir, i))
         os.makedirs('{0}/{1}'.format(download_dir, i), exist_ok=True)
         os.chdir('{0}/{1}'.format(download_dir, i))
         if image_url not in open(downloaded).read():
@@ -126,7 +124,8 @@ for i in lines:
         # DO NOT MOVE THE RANDSTRING. If you do it may only generate 1 random string and overwrite all downloaded files!
         char_set = string.ascii_uppercase + string.digits
         randstring = ''.join(random.sample(char_set*6, 6))
-        os.system("mkdir -p " + home + "/Pictures/Imguralbums/" + i)
+        # os.system("mkdir -p " + home + "/Pictures/Imguralbums/" + i)
+        os.makedirs('{0}/Pictures/Imguralbums/{1}'.format(home, i), exist_ok=True)
         # The d_image_url not in open(downloaded).read() is what keeps this from redownloading images
         # This stops us from downloading (some) thumbnails
         # TODO clean this up.
