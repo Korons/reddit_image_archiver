@@ -19,6 +19,7 @@ downloaded = '{0}/.config/imgur_down/downloaded.txt'.format(home)
 SUBREDDITS = '{0}/.config/imgur_down/subreddits.txt'.format(home)
 logfile = '{0}/.config/imgur_down/log.txt'.format(home)
 download_dir = '{0}/Pictures/Imguralbums'.format(home)
+
 imgur_albums_count = 0
 picture_links_count = 0
 gif_links_count = 0
@@ -38,7 +39,7 @@ def pid_exists(pid):
 
 def image_down(url, ext):
     try:
-        urllib.request.urlretrieve(url, download_dir + '/' + i + '/' + randstring + ext)
+        urllib.request.urlretrieve(url, download_dir + '/' + i + '/' + time.strftime('%Y_%m_%d_%H_%M_%S') + ext)
     except urllib.error.URLError:
         print("WARNING: There was an exception downloading from a direct link (likely a 403 or 404)\n")
         pass
@@ -88,9 +89,7 @@ for i in lines:
     # This regex with get all links to gfycat
     gfycat_links = re.findall('https?://gfycat.com/\w*', result)
     for gfy_links in gfycat_links:
-        # DO NOT MOVE THE RANDSTRING. If you do it may only generate 1 random string and overwrite all downloaded files!
         char_set = string.ascii_uppercase + string.digits
-        randstring = ''.join(random.sample(char_set*6, 6))
         # We need to get the mp4 from the link. We get the mp4 and not the gif to save on bandwidth
         # We need to request the mp4 from *.gfycat.com instead of gfycat.com
         down_gfy_link = gfy_links.replace('gfycat.com', 'giant.gfycat.com')
@@ -98,9 +97,9 @@ for i in lines:
         down_gfy_link = down_gfy_link.replace('http://', 'https://')
         down_gfy_link = down_gfy_link + '.mp4'
         if gfy_links not in open(downloaded).read():
-            print('Downloading\n      {0} in {1}/{2} as {3} \n'.format(down_gfy_link, download_dir, i, randstring))
+            print('Downloading\n      {0} in {1}/{2} as {3} \n'.format(down_gfy_link, download_dir, i, time.strftime('%Y_%m_%d_%H_%M_%S')))
             try:
-                urllib.request.urlretrieve(down_gfy_link, download_dir + '/' + i + '/' + randstring +'.mp4')
+                urllib.request.urlretrieve(down_gfy_link, download_dir + '/' + i + '/' + time.strftime('%Y_%m_%d_%H_%M_%S') +'.mp4')
                 gif_links_count = gif_links_count + 1
             except urllib.error.URLError:
                 print("WARNING: There was an exception downloading from gfycat (likely a 403 or 404)\n")
@@ -109,8 +108,8 @@ for i in lines:
                     # 403 if we use the wrong one when we try the mp4
                     down_gfy_link = down_gfy_link.replace('giant', 'fat')
                     print('Trying fat.gfycat.com\n')
-                    print('Downloading\n      {0} in {1}/{2} as {3} \n'.format(down_gfy_link, download_dir, i, randstring))
-                    urllib.request.urlretrieve(down_gfy_link, download_dir + '/' + i + '/' + randstring + '.mp4')
+                    print('Downloading\n      {0} in {1}/{2} as {3} \n'.format(down_gfy_link, download_dir, i, time.strftime('%Y_%m_%d_%H_%M_%S')))
+                    urllib.request.urlretrieve(down_gfy_link, download_dir + '/' + i + '/' + time.strftime('%Y_%m_%d_%H_%M_%S') + '.mp4')
                     gif_links_count = gif_links_count + 1
                 except urllib.error.URLError:
                     # I'm not going to code all the back up servers right now because tracking them all down is a pain
@@ -121,16 +120,13 @@ for i in lines:
             f.write(gfy_links + '\n')
             f.close()
     for d_image_url in direct_links:
-        # DO NOT MOVE THE RANDSTRING. If you do it may only generate 1 random string and overwrite all downloaded files!
-        char_set = string.ascii_uppercase + string.digits
-        randstring = ''.join(random.sample(char_set*6, 6))
         # os.system("mkdir -p " + home + "/Pictures/Imguralbums/" + i)
         os.makedirs('{0}/Pictures/Imguralbums/{1}'.format(home, i), exist_ok=True)
         # The d_image_url not in open(downloaded).read() is what keeps this from redownloading images
         # This stops us from downloading (some) thumbnails
         # TODO clean this up.
         if not re.findall('https?://i.redditmedia.com/............................................jpg', d_image_url) and not re.findall('https?://..thumbs.redditmedia.com/............................................jpg', d_image_url) and d_image_url not in open(downloaded).read():
-            print('Downloading\n     {0} in {1}/{2} as {3}\n'.format(d_image_url, download_dir, i, randstring))
+            print('Downloading\n     {0} in {1}/{2} as {3}\n'.format(d_image_url, download_dir, i, time.strftime('%Y_%m_%d_%H_%M_%S')))
             if '.' in d_image_url[-4:] and bool(re.search('https?://i.imgur.com/\w*.gif', d_image_url)) == False:
                 image_down(d_image_url, d_image_url[-4:])
                 picture_links_count = picture_links_count + 1
